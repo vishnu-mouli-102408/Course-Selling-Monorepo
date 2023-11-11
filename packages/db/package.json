@@ -12,6 +12,10 @@
   "license": "ISC",
   "dependencies": {
     "@types/mongoose": "^5.11.97",
+    "bcrypt": "^5.1.1",
     "mongoose": "^8.0.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2"
   }
 }
