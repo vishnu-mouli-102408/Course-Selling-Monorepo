@@ -6,7 +6,7 @@ import type { NextAuthOptions } from "next-auth";
 import type { Provider } from "next-auth/providers";
 import { Admin } from "db";
 import { comparePassword } from "common"
-import { ensureDbConnected } from "../../../lib/dbConnect";
+import { ensureDbConnected } from "../../../../lib/dbConnect";
 
 export const options: NextAuthOptions = {
   providers: [
