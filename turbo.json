@@ -9,7 +9,9 @@
     "lint": {},
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "dotEnv": [".env.development.local", ".env.local", ".env.development", ".env"],
+      "env": ["NEXT_GOOGLE_CLIENT_SECRET","NEXT_GOOGLE_CLIENT_ID","NEXTAUTH_SECRET","MONGO_URL"]
     }
   }
 }

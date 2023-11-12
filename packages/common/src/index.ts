@@ -1,1 +1,1 @@
-export { options } from "./options";
+export { comparePassword } from "./bcryptComparePassword"

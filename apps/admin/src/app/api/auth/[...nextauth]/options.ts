@@ -1,14 +1,18 @@
+/* eslint-disable import/no-named-as-default */
+/* eslint-disable no-console */
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { NextAuthOptions } from "next-auth";
-import { Provider } from "next-auth/providers";
-import { ensureDbConnected, Admin } from "../../db/src/index";
+import type { Provider } from "next-auth/providers";
+import { Admin } from "db";
+import { comparePassword } from "common"
+import { ensureDbConnected } from "../../../lib/dbConnect";
 
 export const options: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: process.env.NEXT_GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.NEXT_GOOGLE_CLIENT_SECRET as string,
+      clientId: process.env.NEXT_GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.NEXT_GOOGLE_CLIENT_SECRET || "",
     }),
     CredentialsProvider({
       id: "credentials",
@@ -26,7 +30,7 @@ export const options: NextAuthOptions = {
           placeholder: "Enter your password",
         },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         await ensureDbConnected();
         if (!credentials) {
           return null;
@@ -35,19 +39,21 @@ export const options: NextAuthOptions = {
         const password = credentials.password;
         // Add logic here to look up the user from the credentials supplied
         const admin = await Admin.findOne({ email });
+	console.log("ADMIN",admin)
 
         if (!admin) {
-          const obj = { email: email, password: password };
+          const obj = { email, password };
           const newAdmin = new Admin(obj);
           let adminDb = await newAdmin.save();
-          console.log(adminDb);
+          console.log("AdminDB", adminDb);
           return {
             id: adminDb._id,
             email: adminDb.email,
           };
         } else {
           //TODO:: Make this safer, encrypt passwords
-          if (admin.password !== password) {
+	const response = comparePassword(password,admin.password)
+          if (!response) {
             return null;
           }
           // User is authenticated
@@ -59,12 +65,9 @@ export const options: NextAuthOptions = {
       },
     }),
   ] as Provider[],
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "",
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
-  jwt: {
-    encryption: true,
   },
 };

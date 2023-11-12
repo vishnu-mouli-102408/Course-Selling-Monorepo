@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import NextAuth from "next-auth";
-import { options } from "common";
+import { options } from "./options";
 
 const handler = NextAuth(options);
 
