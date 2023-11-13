@@ -38,12 +38,10 @@ export const options: NextAuthOptions = {
         }
         const email = credentials.email;
         const password = credentials.password;
-        // Add logic here to look up the user from the credentials supplied
         const admin = await Admin.findOne({ email });
         
         if (!admin) {
           const encryptedPassword = hashPassword(password)
-          
           const obj = { email:email,password: encryptedPassword };
           const newAdmin = new Admin(obj);
           let adminDb = await newAdmin.save();
@@ -52,13 +50,10 @@ export const options: NextAuthOptions = {
             email: adminDb.email,
           };
         } else {
-          //TODO:: Make this safer, encrypt passwords
 	        const response = comparePassword(password,admin.password)
-          
           if (!response) {
             return null;
           }
-          // User is authenticated
           return {
             id: admin._id,
             email: admin.email,
