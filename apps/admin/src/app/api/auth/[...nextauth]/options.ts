@@ -69,22 +69,25 @@ export const options: NextAuthOptions = {
   },
   callbacks: {
     async signIn({user,account,profile}){
-      console.log("SignIn", {user,account,profile});
+      // console.log("SignIn", {user,account,profile});
       if (account?.provider == "google"){
-        await ensureDbConnected();
-      const obj = {email:user.email,name:user.name,image:user.image}
-      const newAdmin = new Admin(obj)
-      const adminDb = await newAdmin.save();
-          return true;   
+      await ensureDbConnected();
+      const email = user.email
+      const admin = await Admin.findOne({ email });
+      if(!admin){
+        const obj = {email:user.email,name:user.name,image:user.image}
+        const newAdmin = new Admin(obj)
+        const adminDb = await newAdmin.save();
+      }   
       }
       return true;
     },
     async jwt({token,account,user}){
-      console.log("JWT",{token,account,user});
+      // console.log("JWT",{token,account,user});
       return token;
     },
     async session({session,token,user}){
-      console.log("Session",{session,token,user});
+      // console.log("Session",{session,token,user});
       return session;
     }
   }
