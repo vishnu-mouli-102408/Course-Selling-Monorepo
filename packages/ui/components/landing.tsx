@@ -2,7 +2,6 @@ import { Box, Button, Typography } from "@mui/material";
 import Link from "next/link";
 
 export function Landing({ session }): JSX.Element {
-  console.log(session);
 
   return (
     <Box

@@ -10,6 +10,6 @@ export async function ensureDbConnected() {
   alreadyDone = true;
   console.log("MONGO URL", process.env.MONGO_URL);
 
-  await mongoose.connect(process.env.MONGO_URL!);
+  await mongoose.connect(process.env.MONGO_URL as string);
   console.log("MongoDB connected");
 }

@@ -5,7 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import type { NextAuthOptions } from "next-auth";
 import type { Provider } from "next-auth/providers";
 import { Admin } from "db";
-import { comparePassword } from "common"
+import { comparePassword, hashPassword } from "common"
 import { ensureDbConnected } from "../../../../lib/dbConnect";
 
 export const options: NextAuthOptions = {
@@ -31,6 +31,7 @@ export const options: NextAuthOptions = {
         },
       },
       async authorize(credentials) {
+        
         await ensureDbConnected();
         if (!credentials) {
           return null;
@@ -39,20 +40,21 @@ export const options: NextAuthOptions = {
         const password = credentials.password;
         // Add logic here to look up the user from the credentials supplied
         const admin = await Admin.findOne({ email });
-	console.log("ADMIN",admin)
-
+        
         if (!admin) {
-          const obj = { email, password };
+          const encryptedPassword = hashPassword(password)
+          
+          const obj = { email:email,password: encryptedPassword };
           const newAdmin = new Admin(obj);
           let adminDb = await newAdmin.save();
-          console.log("AdminDB", adminDb);
           return {
             id: adminDb._id,
             email: adminDb.email,
           };
         } else {
           //TODO:: Make this safer, encrypt passwords
-	const response = comparePassword(password,admin.password)
+	        const response = comparePassword(password,admin.password)
+          
           if (!response) {
             return null;
           }
@@ -70,4 +72,25 @@ export const options: NextAuthOptions = {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+  callbacks: {
+    async signIn({user,account,profile}){
+      console.log("SignIn", {user,account,profile});
+      if (account?.provider == "google"){
+        await ensureDbConnected();
+      const obj = {email:user.email,name:user.name,image:user.image}
+      const newAdmin = new Admin(obj)
+      const adminDb = await newAdmin.save();
+          return true;   
+      }
+      return true;
+    },
+    async jwt({token,account,user}){
+      console.log("JWT",{token,account,user});
+      return token;
+    },
+    async session({session,token,user}){
+      console.log("Session",{session,token,user});
+      return session;
+    }
+  }
 };
