@@ -4,27 +4,38 @@ export function ProfilePage(): JSX.Element {
   return (
     <Box
       alignItems="center"
+      bgcolor="white"
       display="flex"
       flexDirection="column"
       justifyContent="center"
       maxWidth="100vw"
       minHeight="100vh"
-      bgcolor="white"
       p={2}
     >
-      <Typography color="black" variant="h4" p={2}>Profile Page</Typography>
-      <TextField id="outlined-basic" variant="outlined" color="error" value="Name"/>
-      <TextField id="outlined-basic" variant="outlined" margin="normal" value="Email"/>
-      <TextField id="outlined-basic" variant="outlined" margin="normal" value="Password"/>
-      <Button
-        variant="contained"
-        component="label"
-      >
+      <Typography color="black" p={2} variant="h4">
+        Profile Page
+      </Typography>
+      <TextField
+        color="error"
+        id="outlined-basic"
+        value="Name"
+        variant="outlined"
+      />
+      <TextField
+        id="outlined-basic"
+        margin="normal"
+        value="Email"
+        variant="outlined"
+      />
+      <TextField
+        id="outlined-basic"
+        margin="normal"
+        value="Password"
+        variant="outlined"
+      />
+      <Button component="label" variant="contained">
         Upload File
-        <Input
-          type="file"
-          hidden
-        />
+        <Input hidden type="file" />
       </Button>
       <Button variant="contained">Save</Button>
     </Box>
