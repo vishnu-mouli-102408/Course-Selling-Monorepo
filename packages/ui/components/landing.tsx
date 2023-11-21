@@ -2,7 +2,6 @@ import { Box, Button, Typography } from "@mui/material";
 import Link from "next/link";
 
 export function Landing({ session,onSignIn }): JSX.Element {
-
   return (
     <Box
       alignItems="center"
@@ -25,10 +24,10 @@ export function Landing({ session,onSignIn }): JSX.Element {
           <Typography>Please Login or Sign up to continue</Typography>
           <Box>
             <Link href="/api/auth/signin">
-              <Button variant="contained" onClick={()=>onSignIn}>Login</Button>
+              <Button variant="contained" onClick={()=>onSignIn(session)}>Login</Button>
             </Link>
             <Link href="/api/auth/signin">
-              <Button variant="contained" onClick={()=>onSignIn}>Sign up</Button>
+              <Button variant="contained" onClick={()=>onSignIn(session)}>Sign up</Button>
             </Link>
           </Box>
         </Box>

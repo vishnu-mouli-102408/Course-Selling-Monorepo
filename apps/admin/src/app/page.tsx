@@ -8,13 +8,23 @@ export default  function Page():JSX.Element{
   const { data: session } = useSession()
   const setUser = useSetRecoilState(userState);
   const user = useRecoilValue(userState)
-  console.log("USER",session);
   
+  
+  return <Landing session={session} onSignIn={(session: any)=> {
+    console.log("USER",session);
+    console.log("SignIn called");
     
-  return <Landing session={session} onSignIn={()=> {
-     setUser({
-      isLoading: false,
-      session: session
-    });
+    if(session){
+      setUser({
+        isLoading: false,
+        session: session
+      });
+    } else{
+      setUser({
+        isLoading: true,
+        session: null
+      });
+    }
+    
   }} />;
 }
