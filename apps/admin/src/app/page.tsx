@@ -1,8 +1,20 @@
+"use client";
 import { Landing } from "ui";
-import { getServerSession } from "next-auth/next";
-import { options } from "./api/auth/[...nextauth]/options";
+import { useSession } from "next-auth/react"
+import { useSetRecoilState, useRecoilValue } from "recoil";
+import {userState} from "store"
 
-export default async function Page(): Promise<unknown> {
-  const session = await getServerSession(options);
-  return <Landing session={session} />;
+export default  function Page():JSX.Element{
+  const { data: session } = useSession()
+  const setUser = useSetRecoilState(userState);
+  const user = useRecoilValue(userState)
+  console.log("USER",session);
+  
+    
+  return <Landing session={session} onSignIn={()=> {
+     setUser({
+      isLoading: false,
+      session: session
+    });
+  }} />;
 }
